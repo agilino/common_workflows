@@ -70,4 +70,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
-            API_TOKEN2=${{ secrets.API_TOKEN2 }}
+            GIT_AUTH_TOKEN=${{ secrets.API_TOKEN2 }}

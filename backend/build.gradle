@@ -33,16 +33,14 @@ publishing {
       name = "GitHubPackages"
       url = "https://maven.pkg.github.com/NU-LXP/common_actions"
       credentials {
-        username "adam-cleo"
-        password System.getenv("API_TOKEN2")
+		username = System.getenv("GITHUB_ACTOR")
+		password = System.getenv("GITHUB_TOKEN")
       }
     }
   }
-      publications {
-
-		mavenJava(MavenPublication){
-            // bootJar is the default build task configured by Spring Boot
-            artifact bootJar
-        }
-    }
+	publications {
+		gpr(MavenPublication) {
+			from(components.java)
+		}
+	}
 }
