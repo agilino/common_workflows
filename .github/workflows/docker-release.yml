@@ -3,6 +3,7 @@ name: "Docker release"
 on:
   push:
     tags:
+      - 0.*
       - 1.*
 
 env:
@@ -30,7 +31,7 @@ jobs:
       - name: Build with Gradle
         run: |
           cd backend
-          ./gradlew build 
+          ./gradlew build --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
 

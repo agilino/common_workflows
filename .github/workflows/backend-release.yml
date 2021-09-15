@@ -30,6 +30,6 @@ jobs:
       - name: Build with Gradle
         run: |
           cd backend
-          ./gradlew build publish
+          ./gradlew build publish  --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
