@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'app.swiss_code'
-version = '0.0.2'
+version = '0.0.3'
 sourceCompatibility = '16'
 
 repositories {
@@ -39,8 +39,10 @@ publishing {
     }
   }
       publications {
-        gpr(MavenPublication) {
-            from(components.java)
+
+		mavenJava(MavenPublication){
+            // bootJar is the default build task configured by Spring Boot
+            artifact bootJar
         }
     }
 }
