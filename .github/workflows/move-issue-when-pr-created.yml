@@ -1,0 +1,30 @@
+name: Move Issue when Pull Request created
+
+on:
+  pull_request:
+    types: [review_requested]
+
+jobs:
+  move-to-in-progress:
+    runs-on: ubuntu-latest
+    name: Move to Ready to review column
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get issue id
+        id: get-issue-id
+        run: |
+          branch_name="${{ github.head_ref }}"
+          regex="(feature|bugfix)/([0-9][0-9]*)"
+          if [[ $branch_name =~ $regex ]]; then
+            issue_id=${BASH_REMATCH[2]}
+          fi
+          echo ::set-output name=issue_id::$issue_id
+
+      - name: Move to Ready to review
+        if: ${{ steps.get-issue-id.outputs.issue_id }}
+        uses: peter-evans/create-or-update-project-card@v1
+        with:
+          project-name: Common Actions
+          column-name: Ready to review
+          issue-number: ${{ steps.get-issue-id.outputs.issue_id }}

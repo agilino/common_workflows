@@ -1,0 +1,42 @@
+name: Increment version
+
+on:
+  workflow_run:
+    workflows: ["Backend release"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write
+    # run job only only if previous one was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success'}}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.API_TOKEN }}
+
+      - name: tag and increment version
+        run: |
+          cd backend
+          version=$(egrep "^version = (.*)$" build.gradle |awk -F"'" '{print $2}')
+          #
+          # git tag current version
+          #
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --global user.name "${{ github.actor }}"
+          major=$(echo $version | awk -F "." '{print $1}')
+          minor=$(echo $version | awk -F "." '{print $2}')
+          minor=$(( minor + 1))
+          patch=0
+          #
+          # set version for backend
+          #
+          sed -i "s/version = '$version'/version = '$major.$minor.$patch'/g" build.gradle
+          git add build.gradle
+          git commit -m "[RELEASE] bump version for next release."
+          git push origin main

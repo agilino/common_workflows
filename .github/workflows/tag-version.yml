@@ -1,0 +1,39 @@
+name: Tag Version
+
+on:
+  workflow_run:
+    workflows: ["Unit test"]
+    branches:
+      - main
+    types:
+      - completed
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write
+    # run job if previous was successful
+    # don`t run if commit message starts with '[RELEASE]' to prevent infinite loop
+    if: ${{ github.event.workflow_run.conclusion == 'success' && !startsWith(github.event.head_commit.message, '[RELEASE]') }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.API_TOKEN }}
+
+      - name: tag version
+        run: |
+          cd backend
+          version=$(egrep "^version = (.*)$" build.gradle |awk -F"'" '{print $2}')
+          #
+          # git tag current version
+          #
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --global user.name "${{ github.actor }}"
+          git tag -a "$version" -m "[RELEASE] crete new tag $version"
+          git push --tags origin

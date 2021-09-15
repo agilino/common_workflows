@@ -1,0 +1,18 @@
+name: Assigned Issues are In progress
+
+on:
+  issues:
+    types: [assigned]
+
+jobs:
+  move-to-todo:
+    runs-on: ubuntu-latest
+    name: Move to In progress
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: alex-page/github-project-automation-plus@v0.8.1
+        with:
+          project: Common Actions
+          column: In progress
+          repo-token: ${{ secrets.API_TOKEN }}

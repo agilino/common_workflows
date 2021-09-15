@@ -1,0 +1,20 @@
+name: Close/open based on columns in Project board
+
+on:
+  project_card:
+    types: [created, edited, moved]
+
+permissions:
+  repository-projects: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/issue-states@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          open-issue-columns: 'Backlog, To do, In progress, Ready to review, In review'
+          closed-issue-columns: 'Done'
