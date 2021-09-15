@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.API_TOKEN }}
+          token: ${{ secrets.API_TOKEN2 }}
 
       - name: tag and increment version
         run: |

@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.API_TOKEN }}
+          token: ${{ secrets.API_TOKEN2 }}
       - name: Set up JDK 16
         uses: actions/setup-java@v2
         with:
@@ -32,4 +32,4 @@ jobs:
           cd backend
           ./gradlew build publish  --stacktrace
         env:
-          GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.API_TOKEN2 }}

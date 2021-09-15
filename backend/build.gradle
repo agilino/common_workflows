@@ -34,7 +34,7 @@ publishing {
       url = "https://maven.pkg.github.com/NU-LXP/common_actions"
       credentials {
         username "adam-cleo"
-        password System.getenv("API_TOKEN")
+        password System.getenv("API_TOKEN2")
       }
     }
   }
