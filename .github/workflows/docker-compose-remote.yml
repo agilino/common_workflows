@@ -70,8 +70,9 @@ jobs:
           script: |
             echo "${DOCKER_PASSWORD}" | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USER} --password-stdin
             IFS=', ' read -r -a commands <<< "${DOCKER_COMPOSE_COMMANDS}"
-            for command in "${array[@]}"
+            for command in "${commands[@]}"
             do
+            echo "performing: docker-compose -f "${DOCKER_COMPOSE_DIR}/${DOCKER_COMPOSE_FILE} $command""
             # run all docker-compose commands one by one
             docker-compose -f "${DOCKER_COMPOSE_DIR}/${DOCKER_COMPOSE_FILE}" "$command"
             done
