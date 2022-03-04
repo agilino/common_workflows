@@ -8,6 +8,15 @@ on:
         required: false
         default: '.'
         type: string
+      docker_registry:
+        description: 'The docker registry to use for docker login'
+        required: false
+        default: 'ghcr.io'
+        type: string
+      docker_user:
+        description: 'The docker user to login'
+        required: true
+        type: string
     secrets:
       checkout_token:
         description: 'workflow token for checkout and publish'
