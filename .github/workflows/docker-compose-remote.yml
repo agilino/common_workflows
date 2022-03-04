@@ -43,11 +43,9 @@ on:
       docker_password:
         description: 'The docker password for login'
         required: true
-        type: string
       ssh_key:
         description: 'ssh private key for remote login'
         required: true
-
     
 jobs:
   docker_compose_remote:
