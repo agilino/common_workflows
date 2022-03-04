@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.API_TOKEN2 }}
+          token: ${{ secrets.github_token }}
       - name: Set up JDK 16
         uses: actions/setup-java@v2
         with:

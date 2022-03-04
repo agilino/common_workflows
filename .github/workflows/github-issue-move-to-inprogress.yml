@@ -15,4 +15,4 @@ jobs:
         with:
           project: Common Actions
           column: In progress
-          repo-token: ${{ secrets.API_TOKEN2 }}
+          repo-token: ${{ secrets.github_token }}
