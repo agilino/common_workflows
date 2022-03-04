@@ -1,4 +1,4 @@
-name: Remote docker-compose commands on remote
+name: build and push docker image to registry
 
 on:
   workflow_call:

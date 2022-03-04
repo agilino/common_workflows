@@ -1,11 +1,17 @@
-name: Increment version
+name: Increment version in gradle project
 
 on:
-  workflow_run:
-    workflows: ["Backend release"]
-    branches: [main]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      gradle_location:
+        description: 'full path to build.gradle file'
+        required: false
+        default: 'build.gradle'
+        type: string
+    secrets:
+      github_token:
+        description: 'workflow token for checkout and push'
+        required: true
 
 jobs:
   build:
@@ -13,19 +19,16 @@ jobs:
     permissions:
       packages: write
       contents: write
-    # run job only only if previous one was successful
-    if: ${{ github.event.workflow_run.conclusion == 'success'}}
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.API_TOKEN2 }}
+          token: ${{ secrets.github_token }}
 
       - name: tag and increment version
         run: |
-          cd backend
-          version=$(egrep "^version = (.*)$" build.gradle |awk -F"'" '{print $2}')
+          version=$(egrep "^version = (.*)$" "${{ inputs.gradle_location }}" |awk -F"'" '{print $2}')
           #
-          # git tag current version
+          # get current version
           #
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
@@ -36,7 +39,7 @@ jobs:
           #
           # set version for backend
           #
-          sed -i "s/version = '$version'/version = '$major.$minor.$patch'/g" build.gradle
-          git add build.gradle
+          sed -i "s/version = '$version'/version = '$major.$minor.$patch'/g" "${{ inputs.gradle_location }}"
+          git add "${{ inputs.gradle_location }}"
           git commit -m "[RELEASE] bump version for next release."
           git push origin main
