@@ -9,7 +9,7 @@ on:
         default: 'build.gradle'
         type: string
     secrets:
-      github_token:
+      checkout_token:
         description: 'workflow token for checkout and push'
         required: true
 
@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.github_token }}
+          token: ${{ secrets.checkout_token }}
 
       - name: tag version
         run: |
