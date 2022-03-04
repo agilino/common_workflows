@@ -6,6 +6,7 @@ Common workflows for CI/CD on github:
 * [tagging](.github/workflows/tag-version.yml) on push to master 
 * [gradle publish](./.github/workflows/backend-release.yml) to release Java Backend after tagging the version
 * [docker push](./.github/workflows/docker-release.yml) to tag and push your docker image to github container registry (ghcr.io)
+* [docker push](./.github/workflows/docker-compose-remote.yml) to execute docker-compose commands (such as pull and up) on your remote server
 * project workflows if you are using the github project board
   * [move issues to backlog](./.github/workflows/move-issue-to-backlog.yml)
   * [move to in progress](./.github/workflows/move-move-issue-to-inprogress.yml) when assigning

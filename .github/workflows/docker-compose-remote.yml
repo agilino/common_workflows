@@ -1,0 +1,78 @@
+name: Remote docker-compose commands on remote
+
+on:
+  workflow_call:
+    inputs:
+      docker_registry:
+        description: 'The docker registry to use for docker login'
+        required: false
+        default: 'ghcr.io'
+        type: string
+      docker_compose_commands:
+        description: 'Comma separated list of docker-compose commands to execute on remote'
+        required: false
+        default: 'pull,up -d'
+        type: string
+      docker_compose_file:
+        description: 'The docker-compose file to use'
+        default: 'docker-compose.yml'
+        required: false
+        type: string
+      docker_compose_dir:
+        description: 'The docker-compose file to use'
+        required: true
+        type: string
+      docker_user:
+        description: 'The docker user to login'
+        required: true
+        type: string
+      docker_password:
+        description: 'The docker password for login'
+        required: true
+        type: string
+      ssh_host:
+        description: 'ssh host for remote login'
+        required: true
+        type: string
+      ssh_port:
+        description: 'ssh port for remote login'
+        required: false
+        default: 22
+        type: string
+      ssh_user:
+        description: 'ssh user for remote login'
+        required: true
+        type: string
+      ssh_key:
+        description: 'ssh private key for remote login'
+        required: true
+        type: string
+    
+jobs:
+  docker_compose_remote:
+    name: docker-compose remote commands
+    runs-on: ubuntu-latest
+    steps:
+      - name: ssh remote and docker-compose pull on remote
+        uses: appleboy/ssh-action@master
+        env:
+          DOCKER_REGISTRY: ${{ inputs.docker_registry }}
+          DOCKER_COMPOSE_DIR: ${{ inputs.docker_compose_dir }}
+          DOCKER_COMPOSE_FILE: ${{ inputs.docker_compose_file }}
+          DOCKER_COMPOSE_COMMANDS: ${{ inputs.docker_compose_commands }}
+          DOCKER_USER: ${{ inputs.docker_user }}
+          DOCKER_PASSWORD: ${{ inputs.docker_password }}
+        with:
+          host: ${{ inputs.ssh_host }}
+          username: ${{ inputs.ssh_user }}
+          key: ${{ inputs.ssh_key }}
+          port: ${{ inputs.ssh_port }}
+          envs: DOCKER_COMPOSE_DIR,DOCKER_COMPOSE_FILE,DOCKER_COMPOSE_COMMANDS,DOCKER_REGISTRY,DOCKER_PASSWORD,DOCKER_USER
+          script: |
+            echo "${DOCKER_PASSWORD}" | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USER} --password-stdin
+            IFS=', ' read -r -a commands <<< "${DOCKER_COMPOSE_COMMANDS}"
+            for command in "${array[@]}"
+            do
+            # run all docker-compose commands one by one
+            docker-compose -f "${DOCKER_COMPOSE_DIR}/${DOCKER_COMPOSE_FILE}" "$command"
+            done
