@@ -26,10 +26,6 @@ on:
         description: 'The docker user to login'
         required: true
         type: string
-      docker_password:
-        description: 'The docker password for login'
-        required: true
-        type: string
       ssh_host:
         description: 'ssh host for remote login'
         required: true
@@ -43,10 +39,15 @@ on:
         description: 'ssh user for remote login'
         required: true
         type: string
+    secrets:
+      docker_password:
+        description: 'The docker password for login'
+        required: true
+        type: string
       ssh_key:
         description: 'ssh private key for remote login'
         required: true
-        type: string
+
     
 jobs:
   docker_compose_remote:
@@ -61,11 +62,11 @@ jobs:
           DOCKER_COMPOSE_FILE: ${{ inputs.docker_compose_file }}
           DOCKER_COMPOSE_COMMANDS: ${{ inputs.docker_compose_commands }}
           DOCKER_USER: ${{ inputs.docker_user }}
-          DOCKER_PASSWORD: ${{ inputs.docker_password }}
+          DOCKER_PASSWORD: ${{ secrets.docker_password }}
         with:
           host: ${{ inputs.ssh_host }}
           username: ${{ inputs.ssh_user }}
-          key: ${{ inputs.ssh_key }}
+          key: ${{ secrets.ssh_key }}
           port: ${{ inputs.ssh_port }}
           envs: DOCKER_COMPOSE_DIR,DOCKER_COMPOSE_FILE,DOCKER_COMPOSE_COMMANDS,DOCKER_REGISTRY,DOCKER_PASSWORD,DOCKER_USER
           script: |
