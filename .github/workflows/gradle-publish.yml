@@ -18,8 +18,8 @@ on:
         required: true
         type: string
     secrets:
-      checkout_token:
-        description: 'workflow token for checkout and publish'
+      docker_password:
+        description: 'workflow token for docker login, checkout and publish'
         required: true
 
 jobs:
@@ -31,8 +31,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.checkout_token }}
-      - name: Log in to the Container registryß
+          token: ${{ secrets.docker_password }}
+      - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
           registry: ${{ inputs.docker_registry }} 
@@ -51,4 +51,4 @@ jobs:
           cd "${{ inputs.project_dir }}"
           ./gradlew build publish  --stacktrace
         env:
-          GITHUB_TOKEN: ${{ secrets.checkout_token }}
+          GITHUB_TOKEN: ${{ secrets.docker_password }}
