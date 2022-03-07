@@ -1,18 +1,18 @@
-name: Opened Issues are in Backlog
+name: Assigned Issues are In progress
 
 on:
   issues:
-    types: [unassigned, opened, reopened]
+    types: [assigned]
 
 jobs:
-  move-to-backlog:
+  move-to-todo:
     runs-on: ubuntu-latest
-    name: Move to Backlog column
+    name: Move to In progress
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - uses: alex-page/github-project-automation-plus@v0.8.1
         with:
           project: Common Actions
-          column: Backlog
-          repo-token: ${{ secrets.API_TOKEN2 }}
+          column: In progress
+          repo-token: ${{ secrets.checkout_token }}
