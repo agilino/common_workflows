@@ -1,0 +1,24 @@
+name: 'tag-version'
+description: 'Provides automated versioning of your commits using git tags each time your CI/CD workflow runs.'
+branding:
+  icon: 'tag'
+  color: 'purple'
+inputs:
+  production-branch:
+    description: 'The branch to use for stable releases in production. Default is master'
+    required: false
+    default: main
+  prefix:
+    description: 'Prefix for the tags'
+    required: false
+    default: v
+outputs:
+  revision:
+    description: 'The new version that was created and tagged in the format of <major>.<minor>.<build>'
+    value: ${{ steps.tag-version.outputs.revision }}
+runs:
+  using: composite
+  steps:
+    - id: tag-version
+      run: bash $GITHUB_ACTION_PATH/src/tag-version.sh ${{ inputs.production-branch }} ${{ github.actor }} ${{ inputs.prefix }}
+      shell: bash
