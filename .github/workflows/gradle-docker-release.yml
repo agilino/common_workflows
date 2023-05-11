@@ -26,6 +26,11 @@ on:
         description: 'The docker image name to build'
         required: true
         type: string
+      jdk_version:
+        description: 'The jdk version to use run java applications'
+        required: false
+        default: '17'
+        type: string
     secrets:
       docker_password:
         description: 'The docker password for login'
@@ -50,10 +55,10 @@ jobs:
           username: ${{ inputs.docker_user }} 
           password: ${{ secrets.docker_password }} 
 
-      - name: Set up JDK 16
+      - name: Set up JDK ${{ inputs.jdk_version }}
         uses: actions/setup-java@v2
         with:
-          java-version: '16'
+          java-version: ${{ inputs.jdk_version }}
           distribution: 'adopt'
           cache: gradle
       - name: Validate Gradle wrapper
