@@ -20,7 +20,7 @@ on:
       jdk_version:
         description: 'The jdk version to use run java applications'
         required: false
-        default: '16'
+        default: '17'
         type: string
     secrets:
       docker_password:
