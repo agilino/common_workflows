@@ -39,6 +39,11 @@ on:
         description: 'ssh user for remote login'
         required: true
         type: string
+      command_timeout:
+        description: 'command timeout in minutes'
+        required: false
+        type: string
+        default: 10m
     secrets:
       docker_password:
         description: 'The docker password for login'
@@ -62,6 +67,7 @@ jobs:
           DOCKER_USER: ${{ inputs.docker_user }}
           DOCKER_PASSWORD: ${{ secrets.docker_password }}
         with:
+          command_timeout: ${{ command_timeout }}
           host: ${{ inputs.ssh_host }}
           username: ${{ inputs.ssh_user }}
           key: ${{ secrets.ssh_key }}
