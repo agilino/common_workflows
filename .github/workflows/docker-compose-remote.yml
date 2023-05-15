@@ -67,7 +67,7 @@ jobs:
           DOCKER_USER: ${{ inputs.docker_user }}
           DOCKER_PASSWORD: ${{ secrets.docker_password }}
         with:
-          command_timeout: ${{ command_timeout }}
+          command_timeout: ${{ inputs.command_timeout }}
           host: ${{ inputs.ssh_host }}
           username: ${{ inputs.ssh_user }}
           key: ${{ secrets.ssh_key }}
