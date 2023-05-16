@@ -80,5 +80,5 @@ jobs:
             do
             echo "performing: docker-compose -f "${DOCKER_COMPOSE_DIR}/${DOCKER_COMPOSE_FILE} $command""
             # run all docker-compose commands one by one
-            docker-compose -f "${DOCKER_COMPOSE_DIR}/${DOCKER_COMPOSE_FILE}" "$command"
+            docker-compose -f "${DOCKER_COMPOSE_DIR}/${DOCKER_COMPOSE_FILE}" ${command}
             done
