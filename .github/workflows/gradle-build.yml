@@ -57,15 +57,15 @@ jobs:
         run: chmod +x ./gradlew
       # without sonar just run the build
       - name: Build with Gradle
-        if: ${{ github.event.inputs.run_sonar == 'false' }}
+        if: ${{ !inputs.run_sonar }}
         run: |
           cd "${{ inputs.project_dir }}"
           ./gradlew build --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.docker_password }}
       # and with sonar do the code analysis
-      - name: Build with Gradle
-        if: ${{ github.event.inputs.run_sonar == 'true' }}
+      - name: Build and sonar analyze with Gradle
+        if: ${{ inputs.run_sonar}}
         run: |
           cd "${{ inputs.project_dir }}"
           ./gradlew build sonar --stacktrace
