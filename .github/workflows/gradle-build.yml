@@ -31,6 +31,12 @@ on:
       docker_password:
         description: "The docker password for login"
         required: true
+      SONAR_TOKEN:
+        description: "sonar token to use"
+        required: false
+      SONAR_HOST_URL:
+        description: "sonar host url to use"
+        required: false
 
 jobs:
   build:
