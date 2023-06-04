@@ -4,27 +4,32 @@ on:
   workflow_call:
     inputs:
       project_dir:
-        description: 'project dir with gradle file. current directory being default'
+        description: "project dir with gradle file. current directory being default"
         required: false
-        default: '.'
+        default: "."
         type: string
       docker_registry:
-        description: 'The docker registry to use for docker login'
+        description: "The docker registry to use for docker login"
         required: false
-        default: 'ghcr.io'
+        default: "ghcr.io"
         type: string
       docker_user:
-        description: 'The docker user to login'
+        description: "The docker user to login"
         required: true
         type: string
       jdk_version:
-        description: 'The jdk version to use run java applications'
+        description: "The jdk version to use run java applications"
         required: false
-        default: '17'
+        default: "17"
         type: string
+      run_sonar:
+        description: "Run sonar analysis"
+        type: boolean
+        required: false
+        default: false
     secrets:
       docker_password:
-        description: 'The docker password for login'
+        description: "The docker password for login"
         required: true
 
 jobs:
@@ -37,26 +42,37 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ inputs.docker_registry }} 
-          username: ${{ inputs.docker_user }} 
-          password: ${{ secrets.docker_password }} 
+          registry: ${{ inputs.docker_registry }}
+          username: ${{ inputs.docker_user }}
+          password: ${{ secrets.docker_password }}
       - name: Set up JDK ${{ inputs.jdk_version }}
         uses: actions/setup-java@v2
         with:
           java-version: ${{ inputs.jdk_version }}
-          distribution: 'adopt'
+          distribution: "adopt"
           cache: gradle
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+      # without sonar just run the build
       - name: Build with Gradle
+        if: ${{ github.event.inputs.run_sonar == 'false' }}
         run: |
           cd "${{ inputs.project_dir }}"
           ./gradlew build --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.docker_password }}
-
+      # and with sonar do the code analysis
+      - name: Build with Gradle
+        if: ${{ github.event.inputs.run_sonar == 'true' }}
+        run: |
+          cd "${{ inputs.project_dir }}"
+          ./gradlew build sonar --stacktrace
+        env:
+          GITHUB_TOKEN: ${{ secrets.docker_password }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       - name: Cleanup Gradle Cache
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
