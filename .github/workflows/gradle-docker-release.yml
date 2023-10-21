@@ -51,9 +51,9 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ inputs.docker_registry }} 
-          username: ${{ inputs.docker_user }} 
-          password: ${{ secrets.docker_password }} 
+          registry: ${{ inputs.docker_registry }}
+          username: ${{ inputs.docker_user }}
+          password: ${{ secrets.docker_password }}
 
       - name: Set up JDK ${{ inputs.jdk_version }}
         uses: actions/setup-java@v2
@@ -64,7 +64,9 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run:  |
+          cd "${{ inputs.project_dir }}"
+          chmod +x ./gradlew
       - name: Build with Gradle
         run: |
           cd "${{ inputs.project_dir }}"
