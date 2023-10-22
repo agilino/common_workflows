@@ -19,7 +19,7 @@ on:
         type: string
       docker_file_location:
         description: 'The docker file location'
-        default: './Dockerfile'
+        default: 'Dockerfile'
         required: false
         type: string
       docker_image_name:
@@ -95,8 +95,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file:  ${{ inputs.docker_file_location }}
+          context: ${{ inputs.project_dir }}
+          file:  "${{ inputs.project_dir }}/${{ inputs.docker_file_location }}"
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
