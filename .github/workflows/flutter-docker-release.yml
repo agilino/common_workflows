@@ -1,4 +1,4 @@
-name: docker login, gradle build and docker push
+name: docker login, flutter build and docker push
 
 on:
   workflow_call:
@@ -55,28 +55,17 @@ jobs:
           username: ${{ inputs.docker_user }}
           password: ${{ secrets.docker_password }}
 
-      - name: Set up JDK ${{ inputs.jdk_version }}
-        uses: actions/setup-java@v2
+      - name: Install flutter
+        uses: subosito/flutter-action@v2
         with:
-          java-version: ${{ inputs.jdk_version }}
-          distribution: 'adopt'
-          cache: gradle
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
-      - name: Make gradlew executable
-        run:  |
-          cd "${{ inputs.project_dir }}"
-          chmod +x ./gradlew
-      - name: Build with Gradle
+          flutter-version: "3.13.8"
+          channel: "stable"
+
+      - name: Unit test
         run: |
-          cd "${{ inputs.project_dir }}"
-          ./gradlew build --stacktrace
-      - name: Cleanup Gradle Cache
-        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
-        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
+          cd ${{ inputs.project_dir }}
+          flutter pub get
+          flutter build web
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
