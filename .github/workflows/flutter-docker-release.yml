@@ -26,10 +26,10 @@ on:
         description: 'The docker image name to build'
         required: true
         type: string
-      jdk_version:
-        description: 'The jdk version to use run java applications'
+      flutter_version:
+        description: 'The flutter version to use run java applications'
         required: false
-        default: '17'
+        default: '3.13.8'
         type: string
     secrets:
       docker_password:
@@ -58,7 +58,7 @@ jobs:
       - name: Install flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.13.8"
+          flutter-version: ${{ inputs.flutter_version }}
           channel: "stable"
 
       - name: Unit test
